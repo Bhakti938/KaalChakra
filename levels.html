@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGENDS OF HISTORY - Character Journey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #0a0806;
+      color: #d4c9b5;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ==============================================
+       BACKGROUND
+       ============================================== */
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      animation: bgZoomIn 20s ease-in-out infinite alternate;
+    }
+    .bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @keyframes bgZoomIn {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(180deg, 
+          rgba(10, 8, 6, 0.3) 0%,
+          rgba(10, 8, 6, 0.6) 40%,
+          rgba(10, 8, 6, 0.85) 70%,
+          rgba(10, 8, 6, 0.95) 100%
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-fog {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-fog .fog-layer {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(180, 160, 130, 0.05), transparent 60%);
+      animation: fogDrift 30s ease-in-out infinite alternate;
+    }
+    .bg-fog .fog-layer-2 {
+      background: radial-gradient(ellipse at 70% 50%, rgba(200, 180, 150, 0.03), transparent 50%);
+      animation-delay: -10s;
+      animation-duration: 35s;
+    }
+    @keyframes fogDrift {
+      0% { transform: translateX(-5%) scale(1); opacity: 0.5; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(5%) scale(1.1); opacity: 0.5; }
+    }
+
+    /* ==============================================
+       HEADER
+       ============================================== */
+    .page-header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #d4af37;
+      text-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+      letter-spacing: 0.3rem;
+    }
+    .page-header .char-info {
+      color: #a08b78;
+      font-size: 1.1rem;
+      letter-spacing: 0.15rem;
+      margin-top: 0.3rem;
+    }
+    .page-header .char-info span {
+      color: #d4af37;
+    }
+
+    /* ==============================================
+       LEVELS CONTAINER
+       ============================================== */
+    .levels-container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      padding: 1rem;
+    }
+
+    .level-item {
+      background: rgba(20, 16, 12, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      border-radius: 4px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.5s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .level-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.03), transparent 70%);
+      pointer-events: none;
+    }
+    .level-item:hover {
+      border-color: #b89a6b;
+      transform: translateX(5px);
+      box-shadow: 0 5px 30px rgba(184, 154, 107, 0.05);
+    }
+    .level-item.completed {
+      border-color: #4a8b5a;
+    }
+    .level-item.completed .level-number {
+      background: #4a8b5a;
+      border-color: #4a8b5a;
+    }
+    .level-item.active {
+      border-color: #d4af37;
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.05);
+    }
+    .level-item.active .level-number {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #0a0806;
+    }
+    .level-item.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .level-item.locked:hover {
+      transform: none;
+      border-color: #3d3228;
+    }
+
+    .level-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #3d3228;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #b89a6b;
+      flex-shrink: 0;
+      transition: all 0.5s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .level-content {
+      flex: 1;
+    }
+    .level-content h3 {
+      font-size: 1.4rem;
+      color: #e8dccc;
+      margin-bottom: 0.2rem;
+    }
+    .level-content .level-era {
+      color: #b89a6b;
+      font-size: 0.9rem;
+      letter-spacing: 0.1rem;
+      text-transform: uppercase;
+    }
+    .level-content .level-desc {
+      color: #b8a58a;
+      font-size: 0.95rem;
+      margin-top: 0.3rem;
+      line-height: 1.5;
+    }
+
+    .level-status {
+      font-size: 1.5rem;
+      margin-left: auto;
+    }
+
+    /* ==============================================
+       TOP BAR
+       ============================================== */
+    .top-bar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .user-info {
+      color: #a08b78;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-info .username {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid #3d3228;
+      color: #a08b78;
+      padding: 0.4rem 1.5rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+    .btn-back:hover {
+      border-color: #b89a6b;
+      color: #d4c9b5;
+    }
+
+    /* Sound Indicator */
+    .sound-indicator {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      background: rgba(20, 16, 12, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      color: #d4c9b5;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+    }
+    .sound-indicator:hover {
+      opacity: 1;
+      border-color: #b89a6b;
+    }
+    .sound-indicator .icon {
+      margin-right: 0.3rem;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 1rem auto 2rem;
+      background: rgba(20, 16, 12, 0.5);
+      border-radius: 4px;
+      padding: 0.5rem;
+      border: 1px solid #3d3228;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(212, 175, 55, 0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #b89a6b, #d4af37);
+      border-radius: 4px;
+      transition: width 0.8s ease;
+      width: 0%;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: #6a5d4e;
+    }
+    .progress-text .completed-count {
+      color: #d4af37;
+    }
+
+    /* ==============================================
+       RESPONSIVE
+       ============================================== */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .level-item { flex-wrap: wrap; padding: 1.2rem; }
+      .level-number { width: 40px; height: 40px; font-size: 1rem; }
+      .level-status { margin-left: 0; }
+      .top-bar { flex-direction: column; align-items: stretch; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .level-item { flex-direction: column; text-align: center; gap: 0.8rem; }
+      .level-number { margin: 0 auto; }
+      .page-header h1 { font-size: 1.8rem; }
+      .sound-indicator { bottom: 1rem; right: 1rem; padding: 0.3rem 0.8rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==============================================
+       BACKGROUND
+       ============================================== -->
+  <div class="bg-image" id="bgContainer">
+    <img src="opback.png" alt="Historical Landscape" id="bgImage">
+  </div>
+  <div class="bg-overlay"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-fog">
+    <div class="fog-layer"></div>
+    <div class="fog-layer fog-layer-2"></div>
+  </div>
+
+  <!-- Sound Indicator -->
+  <button class="sound-indicator" id="soundToggle">
+    <span class="icon">🔊</span> Sound ON
+  </button>
+
+  <!-- ==============================================
+       TOP BAR
+       ============================================== -->
+  <div class="top-bar">
+    <div class="user-info">
+      Welcome, <span class="username" id="currentUser">Historian</span>
+    </div>
+    <button class="btn-back" id="btnBack">← Back to Characters</button>
+  </div>
+
+  <!-- ==============================================
+       PAGE HEADER
+       ============================================== -->
+  <div class="page-header">
+    <h1>THE JOURNEY</h1>
+    <div class="char-info">
+      <span id="characterNameDisplay">Loading...</span> — 
+      <span id="empireNameDisplay">Loading...</span>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       PROGRESS
+       ============================================== -->
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text">
+      <span>Birth</span>
+      <span><span class="completed-count" id="completedCount">0</span> / <span id="totalLevels">0</span> completed</span>
+      <span>Death</span>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       LEVELS
+       ============================================== -->
+  <div class="levels-container" id="levelsContainer"></div>
+
+  <script>
+    // ============================================
+    // AUTH CHECK
+    // ============================================
+    const SESSION_KEY = 'legends_session';
+
+    function getSession() {
+      try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function isLoggedIn() {
+      const session = getSession();
+      return session && session.username;
+    }
+
+    if (!isLoggedIn()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const session = getSession();
+    if (session) {
+      document.getElementById('currentUser').textContent = session.username;
+    }
+
+    // ============================================
+    // SOUND ENGINE
+    // ============================================
+    class SoundEngine {
+      constructor() {
+        this.context = null;
+        this.isEnabled = true;
+        this.initAudio();
+      }
+
+      initAudio() {
+        try {
+          this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          this.isEnabled = false;
+        }
+      }
+
+      resume() {
+        if (this.context && this.context.state === 'suspended') {
+          this.context.resume();
+        }
+      }
+
+      playClick(volume = 0.2) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(400, this.context.currentTime + 0.05);
+          gain.gain.setValueAtTime(volume * 0.4, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playHover(volume = 0.08) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(500, this.context.currentTime + 0.06);
+          gain.gain.setValueAtTime(volume * 0.3, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playSword(volume = 0.25) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const bufferSize = this.context.sampleRate * 0.1;
+          const buffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = (Math.random() * 2 - 1) * Math.sin(t * 80) * Math.exp(-t * 4);
+          }
+          const noise = this.context.createBufferSource();
+          const gain = this.context.createGain();
+          const filter = this.context.createBiquadFilter();
+          noise.buffer = buffer;
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.context.destination);
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(2000, this.context.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(1000, this.context.currentTime + 0.08);
+          filter.Q.value = 3;
+          gain.gain.setValueAtTime(volume * 0.6, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.1);
+          noise.start(this.context.currentTime);
+          noise.stop(this.context.currentTime + 0.1);
+        } catch (e) {}
+      }
+
+      playSuccess(volume = 0.25) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        const notes = [523, 659, 784];
+        notes.forEach((freq, i) => {
+          setTimeout(() => {
+            try {
+              const osc = this.context.createOscillator();
+              const gain = this.context.createGain();
+              osc.connect(gain);
+              gain.connect(this.context.destination);
+              osc.type = 'sine';
+              osc.frequency.value = freq;
+              gain.gain.setValueAtTime(volume * 0.2, this.context.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.12);
+              osc.start(this.context.currentTime);
+              osc.stop(this.context.currentTime + 0.12);
+            } catch (e) {}
+          }, i * 120);
+        });
+      }
+
+      toggle() {
+        this.isEnabled = !this.isEnabled;
+        return this.isEnabled;
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    // ============================================
+    // SOUND TOGGLE
+    // ============================================
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      const enabled = sound.toggle();
+      soundToggle.innerHTML = enabled 
+        ? '<span class="icon">🔊</span> Sound ON'
+        : '<span class="icon">🔇</span> Sound OFF';
+      if (enabled) sound.playClick(0.15);
+    });
+
+    // ============================================
+    // CHARACTER LEVELS DATA
+    // ============================================
+    const characterLevels = {
+      // Mauryan
+      chandragupta: {
+        name: 'Chandragupta Maurya',
+        levels: [
+          { number: 1, era: '340 BCE', title: 'Birth in Magadha', desc: 'Born into a humble family, destined for greatness.' },
+          { number: 2, era: '322 BCE', title: 'Meeting Chanakya', desc: 'The great teacher recognized his potential and took him as a student.' },
+          { number: 3, era: '321 BCE', title: 'Rise Against the Nandas', desc: 'Led a rebellion against the oppressive Nanda dynasty.' },
+          { number: 4, era: '320 BCE', title: 'Founding the Empire', desc: 'Established the Mauryan Empire after defeating the Nandas.' },
+          { number: 5, era: '305 BCE', title: 'War with Seleucus', desc: 'Defeated the Greek general Seleucus and expanded the empire.' },
+          { number: 6, era: '300 BCE', title: 'Golden Age', desc: 'The empire flourished under his wise and just rule.' },
+          { number: 7, era: '298 BCE', title: 'Abdication', desc: 'Gave up the throne to become a Jain monk.' },
+          { number: 8, era: '297 BCE', title: 'Legacy', desc: 'His legacy as the founder of India\'s first great empire lives on.' }
+        ]
+      },
+      ashoka: {
+        name: 'Ashoka the Great',
+        levels: [
+          { number: 1, era: '304 BCE', title: 'Birth of a Prince', desc: 'Born to Emperor Bindusara, a prince of the Mauryan dynasty.' },
+          { number: 2, era: '272 BCE', title: 'Rise to Power', desc: 'Became emperor after a bitter succession struggle.' },
+          { number: 3, era: '265 BCE', title: 'Conquest of Kalinga', desc: 'Won a bloody victory that changed him forever.' },
+          { number: 4, era: '264 BCE', title: 'The Great Transformation', desc: 'Embraced Buddhism after witnessing the horrors of war.' },
+          { number: 5, era: '260 BCE', title: 'Spreading Dhamma', desc: 'Sent missionaries across India and beyond to spread peace.' },
+          { number: 6, era: '250 BCE', title: 'The Edicts', desc: 'Carved his messages of peace and tolerance on pillars across the land.' },
+          { number: 7, era: '240 BCE', title: 'The Golden Age', desc: 'The empire experienced unprecedented peace and prosperity.' },
+          { number: 8, era: '232 BCE', title: 'The Death of an Emperor', desc: 'Passed away, leaving behind a legacy of peace and enlightenment.' },
+          { number: 9, era: 'Legacy', title: 'The Greatest Emperor', desc: 'Remembered as the greatest emperor in Indian history.' },
+          { number: 10, era: 'Eternal', title: 'The Wheel of Dhamma', desc: 'His symbols of peace continue to inspire the world.' }
+        ]
+      },
+      // Chola
+      rajaraja: {
+        name: 'Rajaraja Chola I',
+        levels: [
+          { number: 1, era: '985 CE', title: 'Birth of a King', desc: 'Born to rule one of the greatest empires in Indian history.' },
+          { number: 2, era: '1000 CE', title: 'The Great Builder', desc: 'Commissioned the magnificent Brihadeeswarar Temple.' },
+          { number: 3, era: '1005 CE', title: 'Military Campaigns', desc: 'Expanded the empire through brilliant military campaigns.' },
+          { number: 4, era: '1010 CE', title: 'The Temple Completed', desc: 'The greatest temple of its time was completed.' },
+          { number: 5, era: '1015 CE', title: 'Naval Power', desc: 'Established a powerful navy that dominated the seas.' },
+          { number: 6, era: '1020 CE', title: 'The Golden Era', desc: 'The empire reached its peak under his rule.' },
+          { number: 7, era: '1025 CE', title: 'The Great King', desc: 'Known as the greatest of the Chola emperors.' },
+          { number: 8, era: '1014 CE', title: 'Death of a Legend', desc: 'Passed away, leaving a legacy that would last centuries.' }
+        ]
+      },
+      // Gupta
+      chandragupta2: {
+        name: 'Chandragupta II',
+        levels: [
+          { number: 1, era: '380 CE', title: 'Birth of a Prince', desc: 'Born into the powerful Gupta dynasty.' },
+          { number: 2, era: '400 CE', title: 'The Great Conqueror', desc: 'Expanded the empire through strategic victories.' },
+          { number: 3, era: '405 CE', title: 'The Golden Age', desc: 'Presided over a period of unprecedented cultural flourishing.' },
+          { number: 4, era: '410 CE', title: 'The Poet King', desc: 'Patronized great scholars and poets like Kalidasa.' },
+          { number: 5, era: '415 CE', title: 'The Great King', desc: 'Known as Vikramaditya, the sun of power.' },
+          { number: 6, era: '420 CE', title: 'The Golden Era', desc: 'The Gupta empire reached its greatest extent and glory.' },
+          { number: 7, era: '425 CE', title: 'The Legacy', desc: 'His reign is remembered as India\'s golden age.' },
+          { number: 8, era: '430 CE', title: 'The King\'s Legacy', desc: 'Passed away, leaving a golden legacy.' },
+          { number: 9, era: 'Eternal', title: 'The Golden Emperor', desc: 'Forever remembered as the Golden Emperor of India.' }
+        ]
+      },
+      // Vijayanagara
+      krishnadevaraya: {
+        name: 'Krishnadevaraya',
+        levels: [
+          { number: 1, era: '1509 CE', title: 'Birth of a Legend', desc: 'Born to rule the great Vijayanagara Empire.' },
+          { number: 2, era: '1510 CE', title: 'The Great Conqueror', desc: 'Defeated the Bahmani Sultans and expanded the empire.' },
+          { number: 3, era: '1515 CE', title: 'The Golden Age', desc: 'The empire reached its peak under his wise rule.' },
+          { number: 4, era: '1520 CE', title: 'The Temple Builder', desc: 'Built magnificent temples and patronized the arts.' },
+          { number: 5, era: '1525 CE', title: 'The Scholar King', desc: 'Known as a patron of Telugu literature and arts.' },
+          { number: 6, era: '1530 CE', title: 'The Great King', desc: 'The most powerful ruler of his time in South India.' },
+          { number: 7, era: '1535 CE', title: 'The King\'s Legacy', desc: 'Expanded the empire to its greatest extent.' },
+          { number: 8, era: '1540 CE', title: 'The Golden Years', desc: 'The empire experienced unprecedented peace and prosperity.' },
+          { number: 9, era: '1545 CE', title: 'The Final Years', desc: 'Continued to lead the empire with wisdom and strength.' },
+          { number: 10, era: '1546 CE', title: 'Death of a Legend', desc: 'Passed away, leaving a legacy of greatness.' }
+        ]
+      }
+    };
+
+    // ============================================
+    // GET DATA FROM URL
+    // ============================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const empireId = urlParams.get('empire');
+    const characterId = urlParams.get('character');
+
+    if (!characterId || !characterLevels[characterId]) {
+      window.location.href = 'characters.html?empire=' + empireId;
+    }
+
+    const characterData = characterLevels[characterId];
+    document.getElementById('characterNameDisplay').textContent = characterData.name;
+
+    // Get empire name from previous page
+    const empireNames = {
+      mauryan: 'Mauryan Empire',
+      chola: 'Chola Empire',
+      gupta: 'Gupta Empire',
+      vijayanagara: 'Vijayanagara Empire'
+    };
+    document.getElementById('empireNameDisplay').textContent = empireNames[empireId] || 'Empire';
+
+    // ============================================
+    // RENDER LEVELS
+    // ============================================
+    let completedLevels = JSON.parse(localStorage.getItem('completed_levels_' + characterId) || '[]');
+
+    function renderLevels() {
+      const container = document.getElementById('levelsContainer');
+      container.innerHTML = '';
+      
+      const levels = characterData.levels;
+      const total = levels.length;
+      document.getElementById('totalLevels').textContent = total;
+      document.getElementById('completedCount').textContent = completedLevels.length;
+
+      // Update progress
+      const progress = (completedLevels.length / total) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+
+      levels.forEach((level, index) => {
+        const isCompleted = completedLevels.includes(level.number);
+        const isActive = index === 0 || completedLevels.includes(levels[index - 1].number);
+        const isLocked = !isActive && !isCompleted;
+
+        const div = document.createElement('div');
+        div.className = 'level-item';
+        if (isCompleted) div.classList.add('completed');
+        if (isActive && !isCompleted) div.classList.add('active');
+        if (isLocked) div.classList.add('locked');
+
+        const statusIcon = isCompleted ? '✅' : (isActive ? '▶️' : '🔒');
+
+        div.innerHTML = `
+          <div class="level-number">${level.number}</div>
+          <div class="level-content">
+            <h3>${level.title}</h3>
+            <div class="level-era">${level.era}</div>
+            <div class="level-desc">${level.desc}</div>
+          </div>
+          <div class="level-status">${statusIcon}</div>
+        `;
+
+        if (!isLocked && !isCompleted) {
+          div.style.cursor = 'pointer';
+          div.addEventListener('click', () => {
+            if (sound.isEnabled) {
+              sound.playClick(0.15);
+              setTimeout(() => sound.playSword(0.2), 100);
+            }
+            // Complete the level
+            if (!completedLevels.includes(level.number)) {
+              completedLevels.push(level.number);
+              localStorage.setItem('completed_levels_' + characterId, JSON.stringify(completedLevels));
+              if (sound.isEnabled) sound.playSuccess(0.2);
+              renderLevels();
+            }
+          });
+        }
+
+        div.addEventListener('mouseenter', () => {
+          if (!isLocked && sound.isEnabled) sound.playHover(0.06);
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    // ============================================
+    // EVENT BINDINGS
+    // ============================================
+    document.getElementById('btnBack').addEventListener('click', () => {
+      if (sound.isEnabled) sound.playClick(0.1);
+      window.location.href = `characters.html?empire=${empireId}`;
+    });
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('click', function initAudio() {
+      sound.resume();
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    const bgImage = document.getElementById('bgImage');
+    bgImage.onload = function() {
+      console.log('✅ Levels page background loaded!');
+    };
+    bgImage.onerror = function() {
+      console.warn('⚠️ opback.png failed to load');
+    };
+
+    renderLevels();
+    console.log('📜 Levels page loaded successfully!');
+  </script>
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGENDS OF HISTORY - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================================
+       GLOBAL RESET
+       ============================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #0a0806;
+      color: #d4c9b5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ==============================================
+       BACKGROUND IMAGE - SAME AS OPENING PAGE
+       ============================================== */
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      animation: bgZoomIn 20s ease-in-out infinite alternate;
+    }
+    .bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @keyframes bgZoomIn {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    /* Dark Overlay */
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(180deg, 
+          rgba(10, 8, 6, 0.3) 0%,
+          rgba(10, 8, 6, 0.6) 40%,
+          rgba(10, 8, 6, 0.85) 70%,
+          rgba(10, 8, 6, 0.95) 100%
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Vignette Effect */
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Fog Effects */
+    .bg-fog {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-fog .fog-layer {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(180, 160, 130, 0.05), transparent 60%);
+      animation: fogDrift 30s ease-in-out infinite alternate;
+    }
+    .bg-fog .fog-layer-2 {
+      background: radial-gradient(ellipse at 70% 50%, rgba(200, 180, 150, 0.03), transparent 50%);
+      animation-delay: -10s;
+      animation-duration: 35s;
+    }
+    @keyframes fogDrift {
+      0% { transform: translateX(-5%) scale(1); opacity: 0.5; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(5%) scale(1.1); opacity: 0.5; }
+    }
+
+    /* ==============================================
+       DASHBOARD CONTAINER
+       ============================================== */
+    .dashboard-container {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(20, 16, 12, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid #3d3228;
+      padding: 3rem 2.5rem;
+      border-radius: 4px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      animation: containerFadeIn 1.5s ease;
+    }
+    @keyframes containerFadeIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .dashboard-container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.03), transparent 60%);
+      pointer-events: none;
+    }
+
+    .dashboard-title {
+      font-size: clamp(2.5rem, 7vw, 4rem);
+      text-align: center;
+      color: #e8dccc;
+      margin-bottom: 0.25rem;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
+    }
+    .gold-text {
+      color: #d4af37;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+    .dashboard-subtitle {
+      text-align: center;
+      color: #a08b78;
+      font-size: 1.1rem;
+      letter-spacing: 0.2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #2d241e;
+      padding-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==============================================
+       AUTH TOGGLE
+       ============================================== */
+    .auth-toggle {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-toggle button {
+      background: transparent;
+      border: none;
+      color: #a08b78;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      padding: 0.5rem 2rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.4s ease;
+      letter-spacing: 0.1rem;
+    }
+    .auth-toggle button:hover {
+      color: #d4c9b5;
+    }
+    .auth-toggle button.active {
+      color: #d4af37;
+      border-bottom-color: #d4af37;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+    }
+
+    /* ==============================================
+       FORMS
+       ============================================== */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-form .form-group {
+      position: relative;
+    }
+    .auth-form input {
+      width: 100%;
+      background: rgba(30, 24, 19, 0.6);
+      border: 1px solid #3d3228;
+      padding: 0.9rem 1.2rem;
+      color: #d4c9b5;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.04rem;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+    .auth-form input:focus {
+      outline: none;
+      border-color: #b89a6b;
+      box-shadow: 0 0 30px rgba(184, 154, 107, 0.08);
+      background: rgba(30, 24, 19, 0.8);
+    }
+    .auth-form input::placeholder {
+      color: #6a5d4e;
+    }
+    .auth-form input.error {
+      border-color: #b85a4a;
+      box-shadow: 0 0 20px rgba(184, 90, 74, 0.1);
+    }
+    .auth-form input.success {
+      border-color: #4a8b5a;
+      box-shadow: 0 0 20px rgba(74, 139, 90, 0.1);
+    }
+
+    .auth-error {
+      color: #b85a4a;
+      font-size: 0.85rem;
+      text-align: center;
+      min-height: 1.5rem;
+      font-family: 'Inter', sans-serif;
+      padding: 0.3rem;
+      background: rgba(184, 90, 74, 0.05);
+      border-radius: 2px;
+      border-left: 2px solid #b85a4a;
+    }
+    .auth-success {
+      color: #4a8b5a;
+      font-size: 0.85rem;
+      text-align: center;
+      min-height: 1.5rem;
+      font-family: 'Inter', sans-serif;
+      padding: 0.3rem;
+      background: rgba(74, 139, 90, 0.05);
+      border-radius: 2px;
+      border-left: 2px solid #4a8b5a;
+    }
+    .auth-error.hidden, .auth-success.hidden {
+      display: none;
+    }
+
+    .auth-divider {
+      text-align: center;
+      color: #3d3228;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      letter-spacing: 0.2rem;
+      position: relative;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 30%;
+      height: 1px;
+      background: #2d241e;
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    /* ==============================================
+       BUTTONS
+       ============================================== */
+    .btn-cinematic {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 0.7rem 2.8rem;
+      background: transparent;
+      border: 1.5px solid #b89a6b;
+      color: #d4c9b5;
+      letter-spacing: 0.2rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 20px rgba(184, 154, 107, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-cinematic::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(184, 154, 107, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .btn-cinematic:hover::after {
+      opacity: 1;
+    }
+    .btn-cinematic:hover {
+      background: rgba(184, 154, 107, 0.08);
+      border-color: #d4af37;
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+      transform: scale(1.02);
+      color: #f0e6d3;
+    }
+    .btn-cinematic:active { transform: scale(0.97); }
+    .btn-cinematic:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .btn-cinematic.w-full {
+      width: 100%;
+    }
+    .btn-gold {
+      border-color: #d4af37;
+      color: #d4af37;
+    }
+    .btn-gold:hover {
+      background: rgba(212, 175, 55, 0.08);
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.12);
+    }
+    .btn-small {
+      font-size: 1rem;
+      padding: 0.5rem 2rem;
+    }
+
+    /* ==============================================
+       PASSWORD TOGGLE
+       ============================================== */
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #6a5d4e;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      padding: 0.2rem 0.5rem;
+      transition: color 0.3s;
+    }
+    .password-toggle:hover {
+      color: #b89a6b;
+    }
+
+    /* ==============================================
+       LOADING SPINNER
+       ============================================== */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(184, 154, 107, 0.2);
+      border-top-color: #d4af37;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Sound Indicator */
+    .sound-indicator {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      background: rgba(20, 16, 12, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      color: #d4c9b5;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+      z-index: 100;
+    }
+    .sound-indicator:hover {
+      opacity: 1;
+      border-color: #b89a6b;
+    }
+    .sound-indicator .icon {
+      margin-right: 0.3rem;
+    }
+
+    /* ==============================================
+       RESPONSIVE
+       ============================================== */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .dashboard-container { padding: 2rem 1.5rem; }
+      .auth-toggle button { font-size: 1.1rem; padding: 0.3rem 1rem; }
+      .btn-cinematic { font-size: 1rem; padding: 0.6rem 2rem; }
+      .sound-indicator { bottom: 1rem; right: 1rem; padding: 0.3rem 0.8rem; font-size: 0.7rem; }
+    }
+    @media (max-width: 480px) {
+      .dashboard-container { padding: 1.5rem 1rem; }
+      .auth-toggle { gap: 0.5rem; }
+      .auth-toggle button { font-size: 0.9rem; padding: 0.3rem 0.8rem; }
+      .btn-cinematic { font-size: 0.9rem; padding: 0.5rem 1.5rem; }
+      .auth-form input { padding: 0.7rem 1rem; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==============================================
+       BACKGROUND - SAME AS OPENING PAGE
+       ============================================== -->
+  <div class="bg-image" id="bgContainer">
+    <img src="opback.png" alt="Historical Landscape" id="bgImage">
+  </div>
+  <div class="bg-overlay"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-fog">
+    <div class="fog-layer"></div>
+    <div class="fog-layer fog-layer-2"></div>
+  </div>
+
+  <!-- Sound Indicator -->
+  <button class="sound-indicator" id="soundToggle">
+    <span class="icon">🔊</span> Sound ON
+  </button>
+
+  <!-- ==============================================
+       DASHBOARD CONTENT
+       ============================================== -->
+  <div class="dashboard-container">
+    <h1 class="dashboard-title gold-text">LEGENDS OF HISTORY</h1>
+    <p class="dashboard-subtitle">Begin Your Journey Through Time</p>
+
+    <div class="auth-toggle">
+      <button class="active" id="btnLoginTab">Login</button>
+      <button id="btnSignupTab">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="auth-form" id="loginForm">
+      <div class="form-group">
+        <input type="text" placeholder="Username" id="loginUsername" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Password" id="loginPassword" autocomplete="current-password">
+        <button type="button" class="password-toggle" id="loginPasswordToggle">Show</button>
+      </div>
+      <div class="auth-error hidden" id="loginError"></div>
+      <div class="auth-success hidden" id="loginSuccess"></div>
+      <button class="btn-cinematic btn-gold w-full" id="btnLogin">
+        <span id="loginBtnText">Enter History</span>
+      </button>
+      <div class="auth-divider">— or —</div>
+      <button class="btn-cinematic btn-small w-full" id="btnGuestLogin">Continue as Guest</button>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="auth-form" id="signupForm" style="display:none;">
+      <div class="form-group">
+        <input type="text" placeholder="Choose Username (3-20 characters)" id="signupUsername" autocomplete="username">
+        <small style="color:#6a5d4e; font-family:'Inter',sans-serif; font-size:0.75rem; display:block; margin-top:0.25rem;">Letters, numbers, and underscores only</small>
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Create Password (min 6 characters)" id="signupPassword" autocomplete="new-password">
+        <button type="button" class="password-toggle" id="signupPasswordToggle">Show</button>
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Confirm Password" id="signupConfirm" autocomplete="new-password">
+        <button type="button" class="password-toggle" id="signupConfirmToggle">Show</button>
+      </div>
+      <div class="auth-error hidden" id="signupError"></div>
+      <div class="auth-success hidden" id="signupSuccess"></div>
+      <button class="btn-cinematic btn-gold w-full" id="btnSignup">
+        <span id="signupBtnText">Create Account</span>
+      </button>
+      <div class="auth-divider">— already have an account? —</div>
+      <button class="btn-cinematic btn-small w-full" id="btnSwitchToLogin">Login</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // SOUND ENGINE (Simplified for dashboard)
+    // ============================================
+    class SoundEngine {
+      constructor() {
+        this.context = null;
+        this.isEnabled = true;
+        this.initAudio();
+      }
+
+      initAudio() {
+        try {
+          this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          console.warn('Web Audio not supported');
+          this.isEnabled = false;
+        }
+      }
+
+      resume() {
+        if (this.context && this.context.state === 'suspended') {
+          this.context.resume();
+        }
+      }
+
+      playClick(volume = 0.2) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(400, this.context.currentTime + 0.05);
+          gain.gain.setValueAtTime(volume * 0.4, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playHover(volume = 0.08) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(500, this.context.currentTime + 0.06);
+          gain.gain.setValueAtTime(volume * 0.3, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playSuccess(volume = 0.25) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        const notes = [523, 659, 784];
+        notes.forEach((freq, i) => {
+          setTimeout(() => {
+            try {
+              const osc = this.context.createOscillator();
+              const gain = this.context.createGain();
+              osc.connect(gain);
+              gain.connect(this.context.destination);
+              osc.type = 'sine';
+              osc.frequency.value = freq;
+              gain.gain.setValueAtTime(volume * 0.2, this.context.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.12);
+              osc.start(this.context.currentTime);
+              osc.stop(this.context.currentTime + 0.12);
+            } catch (e) {}
+          }, i * 120);
+        });
+      }
+
+      toggle() {
+        this.isEnabled = !this.isEnabled;
+        return this.isEnabled;
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    // ============================================
+    // SOUND TOGGLE
+    // ============================================
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      const enabled = sound.toggle();
+      soundToggle.innerHTML = enabled 
+        ? '<span class="icon">🔊</span> Sound ON'
+        : '<span class="icon">🔇</span> Sound OFF';
+      if (enabled) {
+        sound.playClick(0.15);
+      }
+    });
+
+    // ============================================
+    // AUTHENTICATION SYSTEM
+    // ============================================
+    const AUTH_KEY = 'legends_users';
+    const SESSION_KEY = 'legends_session';
+
+    function getUsers() {
+      try {
+        const data = localStorage.getItem(AUTH_KEY);
+        return data ? JSON.parse(data) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(AUTH_KEY, JSON.stringify(users));
+    }
+
+    function getSession() {
+      try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveSession(username) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        username: username,
+        loginTime: new Date().toISOString()
+      }));
+    }
+
+    function clearSession() {
+      localStorage.removeItem(SESSION_KEY);
+    }
+
+    function isLoggedIn() {
+      const session = getSession();
+      return session && session.username && getUsers()[session.username] !== undefined;
+    }
+
+    // ============================================
+    // VALIDATION FUNCTIONS
+    // ============================================
+    function validateUsername(username) {
+      if (!username || username.length < 3 || username.length > 20) {
+        return { valid: false, message: 'Username must be 3-20 characters long' };
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        return { valid: false, message: 'Username can only contain letters, numbers, and underscores' };
+      }
+      return { valid: true };
+    }
+
+    function validatePassword(password) {
+      if (!password || password.length < 6) {
+        return { valid: false, message: 'Password must be at least 6 characters long' };
+      }
+      if (!/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
+        return { valid: false, message: 'Password must contain at least one letter and one number' };
+      }
+      return { valid: true };
+    }
+
+    // ============================================
+    // DOM REFS
+    // ============================================
+    const loginTab = document.getElementById('btnLoginTab');
+    const signupTab = document.getElementById('btnSignupTab');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginError = document.getElementById('loginError');
+    const loginSuccess = document.getElementById('loginSuccess');
+    const signupError = document.getElementById('signupError');
+    const signupSuccess = document.getElementById('signupSuccess');
+
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    const signupUsername = document.getElementById('signupUsername');
+    const signupPassword = document.getElementById('signupPassword');
+    const signupConfirm = document.getElementById('signupConfirm');
+
+    const btnLogin = document.getElementById('btnLogin');
+    const btnSignup = document.getElementById('btnSignup');
+    const btnGuest = document.getElementById('btnGuestLogin');
+    const btnSwitchToLogin = document.getElementById('btnSwitchToLogin');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const signupBtnText = document.getElementById('signupBtnText');
+
+    // Password toggles
+    document.getElementById('loginPasswordToggle').addEventListener('click', function() {
+      const input = document.getElementById('loginPassword');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      this.textContent = input.type === 'password' ? 'Show' : 'Hide';
+    });
+
+    document.getElementById('signupPasswordToggle').addEventListener('click', function() {
+      const input = document.getElementById('signupPassword');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      this.textContent = input.type === 'password' ? 'Show' : 'Hide';
+    });
+
+    document.getElementById('signupConfirmToggle').addEventListener('click', function() {
+      const input = document.getElementById('signupConfirm');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      this.textContent = input.type === 'password' ? 'Show' : 'Hide';
+    });
+
+    // ============================================
+    // CLEAR FORM STATES
+    // ============================================
+    function clearLoginState() {
+      loginError.classList.add('hidden');
+      loginSuccess.classList.add('hidden');
+      loginError.textContent = '';
+      loginSuccess.textContent = '';
+      loginUsername.classList.remove('error', 'success');
+      loginPassword.classList.remove('error', 'success');
+    }
+
+    function clearSignupState() {
+      signupError.classList.add('hidden');
+      signupSuccess.classList.add('hidden');
+      signupError.textContent = '';
+      signupSuccess.textContent = '';
+      signupUsername.classList.remove('error', 'success');
+      signupPassword.classList.remove('error', 'success');
+      signupConfirm.classList.remove('error', 'success');
+    }
+
+    // ============================================
+    // TAB SWITCHING
+    // ============================================
+    loginTab.addEventListener('click', () => {
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+      loginForm.style.display = 'flex';
+      signupForm.style.display = 'none';
+      clearLoginState();
+      clearSignupState();
+      if (sound.isEnabled) sound.playClick(0.1);
+    });
+
+    signupTab.addEventListener('click', () => {
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+      signupForm.style.display = 'flex';
+      loginForm.style.display = 'none';
+      clearLoginState();
+      clearSignupState();
+      if (sound.isEnabled) sound.playClick(0.1);
+    });
+
+    btnSwitchToLogin.addEventListener('click', () => {
+      loginTab.click();
+      if (sound.isEnabled) sound.playClick(0.1);
+    });
+
+    // ============================================
+    // LOGIN FUNCTION - Redirects to Empires
+    // ============================================
+    function handleLogin() {
+      clearLoginState();
+      const username = loginUsername.value.trim();
+      const password = loginPassword.value.trim();
+
+      if (!username || !password) {
+        loginError.textContent = 'Please fill in all fields';
+        loginError.classList.remove('hidden');
+        if (!username) loginUsername.classList.add('error');
+        if (!password) loginPassword.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      const usernameCheck = validateUsername(username);
+      if (!usernameCheck.valid) {
+        loginError.textContent = usernameCheck.message;
+        loginError.classList.remove('hidden');
+        loginUsername.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      const users = getUsers();
+      const user = users[username];
+
+      if (!user) {
+        loginError.textContent = 'Account not found. Please sign up first.';
+        loginError.classList.remove('hidden');
+        loginUsername.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      if (user.password !== password) {
+        loginError.textContent = 'Incorrect password. Please try again.';
+        loginError.classList.remove('hidden');
+        loginPassword.classList.add('error');
+        loginPassword.value = '';
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      loginSuccess.textContent = '✓ Welcome back, ' + username + '!';
+      loginSuccess.classList.remove('hidden');
+      loginUsername.classList.add('success');
+      loginPassword.classList.add('success');
+
+      if (sound.isEnabled) {
+        sound.playSuccess(0.2);
+      }
+
+      saveSession(username);
+      // FIXED: Redirect to empires.html instead of histories.html
+      setTimeout(() => {
+        window.location.href = 'empires.html';
+      }, 800);
+    }
+
+    // ============================================
+    // SIGNUP FUNCTION - Redirects to Empires
+    // ============================================
+    function handleSignup() {
+      clearSignupState();
+      const username = signupUsername.value.trim();
+      const password = signupPassword.value.trim();
+      const confirm = signupConfirm.value.trim();
+
+      if (!username || !password || !confirm) {
+        signupError.textContent = 'Please fill in all fields';
+        signupError.classList.remove('hidden');
+        if (!username) signupUsername.classList.add('error');
+        if (!password) signupPassword.classList.add('error');
+        if (!confirm) signupConfirm.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      const usernameCheck = validateUsername(username);
+      if (!usernameCheck.valid) {
+        signupError.textContent = usernameCheck.message;
+        signupError.classList.remove('hidden');
+        signupUsername.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      const users = getUsers();
+      if (users[username]) {
+        signupError.textContent = 'Username already taken. Please choose another.';
+        signupError.classList.remove('hidden');
+        signupUsername.classList.add('error');
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      const passwordCheck = validatePassword(password);
+      if (!passwordCheck.valid) {
+        signupError.textContent = passwordCheck.message;
+        signupError.classList.remove('hidden');
+        signupPassword.classList.add('error');
+        signupPassword.value = '';
+        signupConfirm.value = '';
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      if (password !== confirm) {
+        signupError.textContent = 'Passwords do not match';
+        signupError.classList.remove('hidden');
+        signupConfirm.classList.add('error');
+        signupConfirm.value = '';
+        if (sound.isEnabled) sound.playClick(0.1);
+        return;
+      }
+
+      users[username] = {
+        password: password,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      };
+      saveUsers(users);
+
+      signupSuccess.textContent = '✓ Account created successfully!';
+      signupSuccess.classList.remove('hidden');
+      signupUsername.classList.add('success');
+      signupPassword.classList.add('success');
+      signupConfirm.classList.add('success');
+
+      if (sound.isEnabled) {
+        sound.playSuccess(0.25);
+      }
+
+      saveSession(username);
+      // FIXED: Redirect to empires.html instead of histories.html
+      setTimeout(() => {
+        window.location.href = 'empires.html';
+      }, 1000);
+    }
+
+    // ============================================
+    // BUTTON EVENTS
+    // ============================================
+    btnLogin.addEventListener('click', handleLogin);
+    btnSignup.addEventListener('click', handleSignup);
+
+    btnGuest.addEventListener('click', () => {
+      if (sound.isEnabled) sound.playClick(0.15);
+      const guestName = 'guest_' + Math.random().toString(36).substring(2, 8);
+      saveSession(guestName);
+      // FIXED: Redirect to empires.html instead of histories.html
+      setTimeout(() => {
+        window.location.href = 'empires.html';
+      }, 300);
+    });
+
+    // Enter key support
+    loginUsername.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') loginPassword.focus();
+    });
+    loginPassword.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') btnLogin.click();
+    });
+
+    signupUsername.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') signupPassword.focus();
+    });
+    signupPassword.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') signupConfirm.focus();
+    });
+    signupConfirm.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') btnSignup.click();
+    });
+
+    // Real-time validation feedback
+    signupUsername.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        const check = validateUsername(this.value.trim());
+        if (!check.valid) {
+          this.classList.add('error');
+          this.classList.remove('success');
+        } else {
+          this.classList.remove('error');
+          this.classList.add('success');
+        }
+      }
+    });
+
+    signupPassword.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        const check = validatePassword(this.value.trim());
+        if (!check.valid) {
+          this.classList.add('error');
+          this.classList.remove('success');
+        } else {
+          this.classList.remove('error');
+          this.classList.add('success');
+        }
+      }
+    });
+
+    signupConfirm.addEventListener('blur', function() {
+      if (this.value.trim() && signupPassword.value.trim()) {
+        if (this.value.trim() === signupPassword.value.trim()) {
+          this.classList.remove('error');
+          this.classList.add('success');
+        } else {
+          this.classList.add('error');
+          this.classList.remove('success');
+        }
+      }
+    });
+
+    // Hover sounds for buttons
+    document.querySelectorAll('.btn-cinematic').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        if (sound.isEnabled) sound.playHover(0.06);
+      });
+    });
+
+    // ============================================
+    // CHECK FOR EXISTING SESSION
+    // ============================================
+    if (isLoggedIn()) {
+      // If already logged in, go directly to empires
+      window.location.href = 'empires.html';
+    }
+
+    // ============================================
+    // INIT - Enable audio on first click
+    // ============================================
+    document.addEventListener('click', function initAudio() {
+      sound.resume();
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // ============================================
+    // BACKGROUND IMAGE LOAD CHECK
+    // ============================================
+    const bgImage = document.getElementById('bgImage');
+    bgImage.onload = function() {
+      console.log('✅ Dashboard background loaded successfully!');
+    };
+    bgImage.onerror = function() {
+      console.warn('⚠️ opback.png failed to load on dashboard');
+    };
+
+    console.log('🎵 Dashboard sounds ready!');
+    console.log('📍 Login/Signup redirects to empires.html');
+  </script>
+</body>
+</html>

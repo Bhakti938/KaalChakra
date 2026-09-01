@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGENDS OF HISTORY - Characters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #0a0806;
+      color: #d4c9b5;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ==============================================
+       BACKGROUND
+       ============================================== */
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      animation: bgZoomIn 20s ease-in-out infinite alternate;
+    }
+    .bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @keyframes bgZoomIn {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(180deg, 
+          rgba(10, 8, 6, 0.3) 0%,
+          rgba(10, 8, 6, 0.6) 40%,
+          rgba(10, 8, 6, 0.85) 70%,
+          rgba(10, 8, 6, 0.95) 100%
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-fog {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-fog .fog-layer {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(180, 160, 130, 0.05), transparent 60%);
+      animation: fogDrift 30s ease-in-out infinite alternate;
+    }
+    .bg-fog .fog-layer-2 {
+      background: radial-gradient(ellipse at 70% 50%, rgba(200, 180, 150, 0.03), transparent 50%);
+      animation-delay: -10s;
+      animation-duration: 35s;
+    }
+    @keyframes fogDrift {
+      0% { transform: translateX(-5%) scale(1); opacity: 0.5; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(5%) scale(1.1); opacity: 0.5; }
+    }
+
+    /* ==============================================
+       HEADER
+       ============================================== */
+    .page-header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      color: #d4af37;
+      text-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+      letter-spacing: 0.3rem;
+    }
+    .page-header .empire-name {
+      color: #a08b78;
+      font-size: 1.2rem;
+      letter-spacing: 0.2rem;
+      margin-top: 0.3rem;
+    }
+    .page-header .empire-name span {
+      color: #d4af37;
+    }
+
+    /* ==============================================
+       CHARACTERS GRID
+       ============================================== */
+    .characters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      padding: 1rem;
+    }
+
+    .character-card {
+      background: rgba(20, 16, 12, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .character-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .character-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.03), transparent 50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .character-card:hover::after {
+      opacity: 1;
+    }
+    .character-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      border-color: #b89a6b;
+      box-shadow: 0 20px 60px rgba(184, 154, 107, 0.15);
+    }
+
+    .character-card .char-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #1a1410;
+      margin: 0 auto 1rem;
+      border: 2px solid #3d3228;
+      overflow: hidden;
+      transition: all 0.6s ease;
+      position: relative;
+      z-index: 0;
+    }
+    .character-card .char-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .character-card:hover .char-image {
+      transform: scale(1.08);
+      border-color: #b89a6b;
+      box-shadow: 0 0 40px rgba(184, 154, 107, 0.1);
+    }
+
+    .character-card h2 {
+      font-size: 1.6rem;
+      color: #e8dccc;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .character-card .char-title {
+      color: #b89a6b;
+      font-size: 0.95rem;
+      letter-spacing: 0.1rem;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+    }
+    .character-card .char-desc {
+      color: #b8a58a;
+      font-size: 0.9rem;
+      margin: 0.6rem 0 1rem;
+      position: relative;
+      z-index: 2;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    .character-card .levels-info {
+      color: #6a5d4e;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0.8rem;
+    }
+    .character-card .levels-info span {
+      color: #d4af37;
+    }
+    .character-card .enter-btn {
+      display: inline-block;
+      padding: 0.5rem 2.5rem;
+      border: 1px solid #b89a6b;
+      color: #d4c9b5;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15rem;
+      text-transform: uppercase;
+      transition: all 0.4s ease;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      opacity: 0.7;
+    }
+    .character-card:hover .enter-btn {
+      opacity: 1;
+      background: rgba(184, 154, 107, 0.08);
+      border-color: #d4af37;
+      box-shadow: 0 0 30px rgba(184, 154, 107, 0.05);
+    }
+
+    /* ==============================================
+       TOP BAR
+       ============================================== */
+    .top-bar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .user-info {
+      color: #a08b78;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-info .username {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid #3d3228;
+      color: #a08b78;
+      padding: 0.4rem 1.5rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+    .btn-back:hover {
+      border-color: #b89a6b;
+      color: #d4c9b5;
+    }
+
+    /* Sound Indicator */
+    .sound-indicator {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      background: rgba(20, 16, 12, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      color: #d4c9b5;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+    }
+    .sound-indicator:hover {
+      opacity: 1;
+      border-color: #b89a6b;
+    }
+    .sound-indicator .icon {
+      margin-right: 0.3rem;
+    }
+
+    /* ==============================================
+       RESPONSIVE
+       ============================================== */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .characters-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+      .character-card .char-image { width: 120px; height: 120px; }
+      .top-bar { flex-direction: column; align-items: stretch; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .characters-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 2rem; }
+      .sound-indicator { bottom: 1rem; right: 1rem; padding: 0.3rem 0.8rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==============================================
+       BACKGROUND
+       ============================================== -->
+  <div class="bg-image" id="bgContainer">
+    <img src="opback.png" alt="Historical Landscape" id="bgImage">
+  </div>
+  <div class="bg-overlay"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-fog">
+    <div class="fog-layer"></div>
+    <div class="fog-layer fog-layer-2"></div>
+  </div>
+
+  <!-- Sound Indicator -->
+  <button class="sound-indicator" id="soundToggle">
+    <span class="icon">🔊</span> Sound ON
+  </button>
+
+  <!-- ==============================================
+       TOP BAR
+       ============================================== -->
+  <div class="top-bar">
+    <div class="user-info">
+      Welcome, <span class="username" id="currentUser">Historian</span>
+    </div>
+    <button class="btn-back" id="btnBack">← Back to Empires</button>
+  </div>
+
+  <!-- ==============================================
+       PAGE HEADER
+       ============================================== -->
+  <div class="page-header">
+    <h1>LEGENDS OF THE EMPIRE</h1>
+    <div class="empire-name">Exploring: <span id="empireNameDisplay">Loading...</span></div>
+  </div>
+
+  <!-- ==============================================
+       CHARACTERS GRID
+       ============================================== -->
+  <div class="characters-grid" id="charactersGrid"></div>
+
+  <script>
+    // ============================================
+    // AUTH CHECK
+    // ============================================
+    const SESSION_KEY = 'legends_session';
+
+    function getSession() {
+      try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function isLoggedIn() {
+      const session = getSession();
+      return session && session.username;
+    }
+
+    if (!isLoggedIn()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const session = getSession();
+    if (session) {
+      document.getElementById('currentUser').textContent = session.username;
+    }
+
+    // ============================================
+    // SOUND ENGINE
+    // ============================================
+    class SoundEngine {
+      constructor() {
+        this.context = null;
+        this.isEnabled = true;
+        this.initAudio();
+      }
+
+      initAudio() {
+        try {
+          this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          this.isEnabled = false;
+        }
+      }
+
+      resume() {
+        if (this.context && this.context.state === 'suspended') {
+          this.context.resume();
+        }
+      }
+
+      playClick(volume = 0.2) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(400, this.context.currentTime + 0.05);
+          gain.gain.setValueAtTime(volume * 0.4, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playHover(volume = 0.08) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(500, this.context.currentTime + 0.06);
+          gain.gain.setValueAtTime(volume * 0.3, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playSword(volume = 0.25) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const bufferSize = this.context.sampleRate * 0.1;
+          const buffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = (Math.random() * 2 - 1) * Math.sin(t * 80) * Math.exp(-t * 4);
+          }
+          const noise = this.context.createBufferSource();
+          const gain = this.context.createGain();
+          const filter = this.context.createBiquadFilter();
+          noise.buffer = buffer;
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.context.destination);
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(2000, this.context.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(1000, this.context.currentTime + 0.08);
+          filter.Q.value = 3;
+          gain.gain.setValueAtTime(volume * 0.6, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.1);
+          noise.start(this.context.currentTime);
+          noise.stop(this.context.currentTime + 0.1);
+        } catch (e) {}
+      }
+
+      toggle() {
+        this.isEnabled = !this.isEnabled;
+        return this.isEnabled;
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    // ============================================
+    // SOUND TOGGLE
+    // ============================================
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      const enabled = sound.toggle();
+      soundToggle.innerHTML = enabled 
+        ? '<span class="icon">🔊</span> Sound ON'
+        : '<span class="icon">🔇</span> Sound OFF';
+      if (enabled) sound.playClick(0.15);
+    });
+
+    // ============================================
+    // DATA - 2 CHARACTERS PER EMPIRE
+    // ============================================
+    const empireCharacters = {
+      mauryan: {
+        name: 'Mauryan Empire',
+        characters: [
+          {
+            id: 'chandragupta',
+            name: 'Chandragupta Maurya',
+            title: 'Founder of the Mauryan Empire',
+            image: 'chandragupta.png',
+            desc: 'The visionary who united India and founded the first great empire.',
+            levels: 8
+          },
+          {
+            id: 'bindusara',
+            name: 'Bindusara Maurya',
+            title: 'Second Mauryan Emperor',
+            image: 'bindusara.png',
+            desc: 'Expanded the empire and continued his father\'s legacy of conquest.',
+            levels: 6
+          }
+        ]
+      },
+      chola: {
+        name: 'Chola Empire',
+        characters: [
+          {
+            id: 'rajaraja',
+            name: 'Rajaraja Chola I',
+            title: 'The Great Chola Emperor',
+            image: 'rajaraja.png',
+            desc: 'Built the magnificent Brihadeeswarar Temple and expanded the empire.',
+            levels: 8
+          },
+          {
+            id: 'rajendra',
+            name: 'Rajendra Chola I',
+            title: 'The Conqueror',
+            image: 'rajendra.png',
+            desc: 'Extended the Chola empire to Southeast Asia and built a powerful navy.',
+            levels: 7
+          }
+        ]
+      },
+      gupta: {
+        name: 'Gupta Empire',
+        characters: [
+          {
+            id: 'samudragupta',
+            name: 'Samudragupta',
+            title: 'The Napoleon of India',
+            image: 'samudragupta.png',
+            desc: 'The greatest warrior-king of the Gupta dynasty who conquered vast territories.',
+            levels: 7
+          },
+          {
+            id: 'chandragupta2',
+            name: 'Chandragupta II',
+            title: 'Vikramaditya',
+            image: 'chandragupta2.png',
+            desc: 'The golden age emperor who patronized arts, science, and literature.',
+            levels: 9
+          }
+        ]
+      },
+      vijayanagara: {
+        name: 'Vijayanagara Empire',
+        characters: [
+          {
+            id: 'harihara',
+            name: 'Harihara I',
+            title: 'Founder of Vijayanagara',
+            image: 'harihara.png',
+            desc: 'Built the foundations of one of India\'s greatest empires.',
+            levels: 6
+          },
+          {
+            id: 'krishnadevaraya',
+            name: 'Krishnadevaraya',
+            title: 'The Greatest Vijayanagara King',
+            image: 'krishnadevaraya.png',
+            desc: 'The most powerful ruler of the empire, known for his military prowess and cultural patronage.',
+            levels: 10
+          }
+        ]
+      }
+    };
+
+    // ============================================
+    // GET EMPIRE FROM URL
+    // ============================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const empireId = urlParams.get('empire');
+
+    if (!empireId || !empireCharacters[empireId]) {
+      window.location.href = 'empires.html';
+    }
+
+    const empireData = empireCharacters[empireId];
+    document.getElementById('empireNameDisplay').textContent = empireData.name;
+
+    // ============================================
+    // RENDER CHARACTERS
+    // ============================================
+    function renderCharacters() {
+      const grid = document.getElementById('charactersGrid');
+      grid.innerHTML = '';
+      empireData.characters.forEach((char, idx) => {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+          <div class="char-image">
+            <img src="${char.image}" alt="${char.name}" onerror="this.style.display='none'; this.parentElement.style.background='radial-gradient(ellipse at center, rgba(212,175,55,0.05), transparent 70%)'">
+          </div>
+          <h2>${char.name}</h2>
+          <div class="char-title">${char.title}</div>
+          <div class="char-desc">${char.desc}</div>
+          <div class="levels-info">📜 <span>${char.levels}</span> Levels of History</div>
+          <button class="enter-btn" data-id="${char.id}">Begin Journey</button>
+        `;
+        card.querySelector('.enter-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (sound.isEnabled) {
+            sound.playClick(0.15);
+            setTimeout(() => sound.playSword(0.25), 100);
+          }
+          window.location.href = `levels.html?empire=${empireId}&character=${char.id}`;
+        });
+        card.addEventListener('mouseenter', () => {
+          if (sound.isEnabled) sound.playHover(0.06);
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    // ============================================
+    // EVENT BINDINGS
+    // ============================================
+    document.getElementById('btnBack').addEventListener('click', () => {
+      if (sound.isEnabled) sound.playClick(0.1);
+      window.location.href = 'empires.html';
+    });
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('click', function initAudio() {
+      sound.resume();
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    const bgImage = document.getElementById('bgImage');
+    bgImage.onload = function() {
+      console.log('✅ Characters page background loaded!');
+    };
+    bgImage.onerror = function() {
+      console.warn('⚠️ opback.png failed to load');
+    };
+
+    renderCharacters();
+    console.log('👑 Characters page loaded successfully!');
+    console.log('📁 Character images needed:');
+    console.log('   Mauryan: chandragupta.png, bindusara.png');
+    console.log('   Chola: rajaraja.png, rajendra.png');
+    console.log('   Gupta: samudragupta.png, chandragupta2.png');
+    console.log('   Vijayanagara: harihara.png, krishnadevaraya.png');
+  </script>
+</body>
+</html>

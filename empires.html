@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGENDS OF HISTORY - Choose Empire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #0a0806;
+      color: #d4c9b5;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ==============================================
+       BACKGROUND - SAME AS OPENING PAGE
+       ============================================== */
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      animation: bgZoomIn 20s ease-in-out infinite alternate;
+    }
+    .bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @keyframes bgZoomIn {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(180deg, 
+          rgba(10, 8, 6, 0.3) 0%,
+          rgba(10, 8, 6, 0.6) 40%,
+          rgba(10, 8, 6, 0.85) 70%,
+          rgba(10, 8, 6, 0.95) 100%
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-fog {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-fog .fog-layer {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(180, 160, 130, 0.05), transparent 60%);
+      animation: fogDrift 30s ease-in-out infinite alternate;
+    }
+    .bg-fog .fog-layer-2 {
+      background: radial-gradient(ellipse at 70% 50%, rgba(200, 180, 150, 0.03), transparent 50%);
+      animation-delay: -10s;
+      animation-duration: 35s;
+    }
+    @keyframes fogDrift {
+      0% { transform: translateX(-5%) scale(1); opacity: 0.5; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(5%) scale(1.1); opacity: 0.5; }
+    }
+
+    /* ==============================================
+       HEADER
+       ============================================== */
+    .page-header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .page-header h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      color: #d4af37;
+      text-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+      letter-spacing: 0.3rem;
+    }
+    .page-header p {
+      color: #a08b78;
+      font-size: 1.2rem;
+      letter-spacing: 0.2rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ==============================================
+       EMPIRES GRID
+       ============================================== */
+    .empires-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      padding: 1rem;
+    }
+
+    .empire-card {
+      background: rgba(20, 16, 12, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .empire-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .empire-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.03), transparent 50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .empire-card:hover::after {
+      opacity: 1;
+    }
+    .empire-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      border-color: #b89a6b;
+      box-shadow: 0 20px 60px rgba(184, 154, 107, 0.15);
+    }
+
+    .empire-card .empire-image {
+      width: 100%;
+      height: 200px;
+      background: #1a1410;
+      margin-bottom: 1rem;
+      border-radius: 2px;
+      border: 1px solid #2d241e;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s ease;
+      position: relative;
+      z-index: 0;
+      background-color: #1a1410;
+    }
+    .empire-card:hover .empire-image {
+      transform: scale(1.05);
+    }
+
+    /* Fallback if image doesn't load */
+    .empire-card .empire-image .image-fallback {
+      display: none;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.05), transparent 70%);
+      align-items: center;
+      justify-content: center;
+      color: #3d3228;
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .empire-card .empire-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .empire-card h2 {
+      font-size: 1.8rem;
+      color: #e8dccc;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .empire-card .empire-era {
+      color: #b89a6b;
+      font-size: 1rem;
+      letter-spacing: 0.1rem;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+    }
+    .empire-card .empire-desc {
+      color: #b8a58a;
+      font-size: 0.95rem;
+      margin: 0.6rem 0 1rem;
+      position: relative;
+      z-index: 2;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    .empire-card .enter-btn {
+      display: inline-block;
+      padding: 0.5rem 2.5rem;
+      border: 1px solid #b89a6b;
+      color: #d4c9b5;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15rem;
+      text-transform: uppercase;
+      transition: all 0.4s ease;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      opacity: 0.7;
+    }
+    .empire-card:hover .enter-btn {
+      opacity: 1;
+      background: rgba(184, 154, 107, 0.08);
+      border-color: #d4af37;
+      box-shadow: 0 0 30px rgba(184, 154, 107, 0.05);
+    }
+
+    /* ==============================================
+       USER INFO & BACK BUTTON
+       ============================================== */
+    .top-bar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .user-info {
+      color: #a08b78;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-info .username {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid #3d3228;
+      color: #a08b78;
+      padding: 0.4rem 1.5rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+    .btn-back:hover {
+      border-color: #b89a6b;
+      color: #d4c9b5;
+    }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #3d3228;
+      color: #a08b78;
+      padding: 0.4rem 1.5rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+    .btn-logout:hover {
+      border-color: #b85a4a;
+      color: #b85a4a;
+    }
+
+    /* Sound Indicator */
+    .sound-indicator {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      background: rgba(20, 16, 12, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3d3228;
+      color: #d4c9b5;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+    }
+    .sound-indicator:hover {
+      opacity: 1;
+      border-color: #b89a6b;
+    }
+    .sound-indicator .icon {
+      margin-right: 0.3rem;
+    }
+
+    /* ==============================================
+       RESPONSIVE
+       ============================================== */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .empires-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+      .empire-card .empire-image { height: 160px; }
+      .top-bar { flex-direction: column; align-items: stretch; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .empires-grid { grid-template-columns: 1fr; }
+      .empire-card .empire-image { height: 180px; }
+      .page-header h1 { font-size: 2rem; }
+      .sound-indicator { bottom: 1rem; right: 1rem; padding: 0.3rem 0.8rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==============================================
+       BACKGROUND
+       ============================================== -->
+  <div class="bg-image" id="bgContainer">
+    <img src="opback.png" alt="Historical Landscape" id="bgImage">
+  </div>
+  <div class="bg-overlay"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-fog">
+    <div class="fog-layer"></div>
+    <div class="fog-layer fog-layer-2"></div>
+  </div>
+
+  <!-- Sound Indicator -->
+  <button class="sound-indicator" id="soundToggle">
+    <span class="icon">🔊</span> Sound ON
+  </button>
+
+  <!-- ==============================================
+       TOP BAR
+       ============================================== -->
+  <div class="top-bar">
+    <div class="user-info">
+      Welcome, <span class="username" id="currentUser">Historian</span>
+    </div>
+    <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+      <button class="btn-back" id="btnBack">← Back</button>
+      <button class="btn-logout" id="btnLogout">Logout</button>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       PAGE HEADER
+       ============================================== -->
+  <div class="page-header">
+    <h1>CHOOSE YOUR EMPIRE</h1>
+    <p>Select an empire to explore its legendary history</p>
+  </div>
+
+  <!-- ==============================================
+       EMPIRES GRID
+       ============================================== -->
+  <div class="empires-grid" id="empiresGrid"></div>
+
+  <script>
+    // ============================================
+    // AUTH CHECK
+    // ============================================
+    const SESSION_KEY = 'legends_session';
+
+    function getSession() {
+      try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function clearSession() {
+      localStorage.removeItem(SESSION_KEY);
+    }
+
+    function isLoggedIn() {
+      const session = getSession();
+      return session && session.username;
+    }
+
+    if (!isLoggedIn()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const session = getSession();
+    if (session) {
+      document.getElementById('currentUser').textContent = session.username;
+    }
+
+    // ============================================
+    // SOUND ENGINE
+    // ============================================
+    class SoundEngine {
+      constructor() {
+        this.context = null;
+        this.isEnabled = true;
+        this.initAudio();
+      }
+
+      initAudio() {
+        try {
+          this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          this.isEnabled = false;
+        }
+      }
+
+      resume() {
+        if (this.context && this.context.state === 'suspended') {
+          this.context.resume();
+        }
+      }
+
+      playClick(volume = 0.2) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(400, this.context.currentTime + 0.05);
+          gain.gain.setValueAtTime(volume * 0.4, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playHover(volume = 0.08) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const osc = this.context.createOscillator();
+          const gain = this.context.createGain();
+          osc.connect(gain);
+          gain.connect(this.context.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, this.context.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(500, this.context.currentTime + 0.06);
+          gain.gain.setValueAtTime(volume * 0.3, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          osc.start(this.context.currentTime);
+          osc.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      playSword(volume = 0.2) {
+        if (!this.isEnabled || !this.context) return;
+        this.resume();
+        try {
+          const bufferSize = this.context.sampleRate * 0.08;
+          const buffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = (Math.random() * 2 - 1) * Math.sin(t * 80) * Math.exp(-t * 5);
+          }
+          const noise = this.context.createBufferSource();
+          const gain = this.context.createGain();
+          const filter = this.context.createBiquadFilter();
+          noise.buffer = buffer;
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.context.destination);
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(2000, this.context.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(1000, this.context.currentTime + 0.06);
+          filter.Q.value = 3;
+          gain.gain.setValueAtTime(volume * 0.6, this.context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.08);
+          noise.start(this.context.currentTime);
+          noise.stop(this.context.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      toggle() {
+        this.isEnabled = !this.isEnabled;
+        return this.isEnabled;
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    // ============================================
+    // SOUND TOGGLE
+    // ============================================
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      const enabled = sound.toggle();
+      soundToggle.innerHTML = enabled 
+        ? '<span class="icon">🔊</span> Sound ON'
+        : '<span class="icon">🔇</span> Sound OFF';
+      if (enabled) sound.playClick(0.15);
+    });
+
+    // ============================================
+    // EMPIRE DATA WITH INDIVIDUAL IMAGES
+    // ============================================
+    const empires = [{
+      id: 'mauryan',
+      name: 'Mauryan Empire',
+      era: '322 BCE – 185 BCE',
+      image: 'mauryan.png',
+      desc: 'The first great empire of India, ruled by Chandragupta and Ashoka the Great.'
+    }, {
+      id: 'chola',
+      name: 'Chola Empire',
+      era: '300 BCE – 1279 CE',
+      image: 'chola.png',
+      desc: 'A powerful maritime empire known for its naval prowess and magnificent temples.'
+    }, {
+      id: 'gupta',
+      name: 'Gupta Empire',
+      era: '320 CE – 550 CE',
+      image: 'gupta.png',
+      desc: 'The Golden Age of India, known for its achievements in science, mathematics, and arts.'
+    }, {
+      id: 'vijayanagara',
+      name: 'Vijayanagara Empire',
+      era: '1336 CE – 1646 CE',
+      image: 'vijayanagara.png',
+      desc: 'A powerful South Indian empire known for its wealth, architecture, and military strength.'
+    }];
+
+    // ============================================
+    // RENDER EMPIRES
+    // ============================================
+    function renderEmpires() {
+      const grid = document.getElementById('empiresGrid');
+      grid.innerHTML = '';
+      empires.forEach((empire, idx) => {
+        const card = document.createElement('div');
+        card.className = 'empire-card';
+        card.innerHTML = `
+          <div class="empire-image" id="img-${empire.id}">
+            <img src="${empire.image}" alt="${empire.name}" onerror="this.style.display='none'; document.getElementById('fallback-${empire.id}').style.display='flex'">
+            <div class="image-fallback" id="fallback-${empire.id}">
+              ${empire.name.charAt(0)}
+            </div>
+          </div>
+          <h2>${empire.name}</h2>
+          <div class="empire-era">${empire.era}</div>
+          <div class="empire-desc">${empire.desc}</div>
+          <button class="enter-btn" data-id="${empire.id}">Enter Empire</button>
+        `;
+        card.querySelector('.enter-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (sound.isEnabled) {
+            sound.playClick(0.15);
+            setTimeout(() => sound.playSword(0.2), 100);
+          }
+          window.location.href = `characters.html?empire=${empire.id}`;
+        });
+        card.addEventListener('mouseenter', () => {
+          if (sound.isEnabled) sound.playHover(0.06);
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    // ============================================
+    // EVENT BINDINGS
+    // ============================================
+    document.getElementById('btnBack').addEventListener('click', () => {
+      if (sound.isEnabled) sound.playClick(0.1);
+      window.location.href = 'histories.html';
+    });
+
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      if (sound.isEnabled) sound.playClick(0.1);
+      clearSession();
+      window.location.href = 'dashboard.html';
+    });
+
+    // ============================================
+    // INIT - Enable audio on first click
+    // ============================================
+    document.addEventListener('click', function initAudio() {
+      sound.resume();
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // ============================================
+    // BACKGROUND IMAGE LOAD CHECK
+    // ============================================
+    const bgImage = document.getElementById('bgImage');
+    bgImage.onload = function() {
+      console.log('✅ Empires page background loaded!');
+    };
+    bgImage.onerror = function() {
+      console.warn('⚠️ opback.png failed to load');
+    };
+
+    renderEmpires();
+    console.log('🏛️ Empires page loaded successfully!');
+    console.log('📁 Looking for empire images: mauryan.png, chola.png, gupta.png, vijayanagara.png');
+  </script>
+</body>
+</html>

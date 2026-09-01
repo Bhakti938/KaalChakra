@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGENDS OF HISTORY - Cinematic Story</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: #0a0806;
+      color: #d4c9b5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1.5rem;
+      background-image: 
+        radial-gradient(ellipse at 30% 20%, rgba(120, 80, 40, 0.05), transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(180, 130, 70, 0.03), transparent 50%);
+    }
+
+    .story-container {
+      max-width: 1000px;
+      width: 100%;
+      background: rgba(16, 12, 9, 0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid #3d3228;
+      padding: 2rem;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       CINEMATIC HEADER
+       ============================================ */
+    .story-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2d241e;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .story-header h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: #d4af37;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+      animation: titleGlow 3s infinite alternate;
+    }
+    @keyframes titleGlow {
+      0% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.05); }
+      100% { text-shadow: 0 0 40px rgba(212, 175, 55, 0.15); }
+    }
+    .story-header .story-era {
+      color: #a08b78;
+      font-size: 1.1rem;
+      letter-spacing: 0.15rem;
+    }
+
+    /* ============================================
+       CINEMATIC SCENE - VIDEO STYLE
+       ============================================ */
+    .cinematic-scene {
+      width: 100%;
+      height: 350px;
+      margin: 1.5rem 0;
+      border: 1px solid #2d241e;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      background: #0a0806;
+    }
+
+    /* Scene transition effects */
+    .scene-transition {
+      animation: sceneFadeIn 1.2s ease forwards;
+    }
+    @keyframes sceneFadeIn {
+      0% { opacity: 0; transform: scale(1.05); filter: blur(4px); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    /* ============================================
+       SCENE TYPES WITH ANIMATIONS
+       ============================================ */
+
+    /* 1. MOUNTAIN SCENE - Cinematic Pan */
+    .scene-mountain {
+      background: radial-gradient(ellipse at 30% 80%, #2d241e, #0a0806);
+      position: relative;
+    }
+    .scene-mountain .mountains {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 70%;
+      background: 
+        polygon(0% 100%, 5% 40%, 12% 60%, 25% 30%, 35% 50%, 50% 20%, 65% 45%, 80% 35%, 95% 50%, 100% 100%);
+      opacity: 0.3;
+      animation: mountainPan 20s linear infinite;
+    }
+    @keyframes mountainPan {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .scene-mountain .fort {
+      position: absolute;
+      bottom: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 90px;
+      background: 
+        polygon(10% 100%, 20% 40%, 40% 30%, 50% 0%, 60% 30%, 80% 40%, 90% 100%);
+      opacity: 0.5;
+      border: 1px solid rgba(184, 154, 107, 0.15);
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.05);
+      animation: fortPulse 4s ease-in-out infinite;
+    }
+    @keyframes fortPulse {
+      0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.6; transform: translateX(-50%) scale(1.02); }
+    }
+    .scene-mountain .sun {
+      position: absolute;
+      top: 15%;
+      right: 20%;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.25), transparent 70%);
+      box-shadow: 0 0 100px rgba(212, 175, 55, 0.1);
+      animation: sunGlow 6s ease-in-out infinite;
+    }
+    @keyframes sunGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .scene-mountain .clouds {
+      position: absolute;
+      top: 20%;
+      left: -20%;
+      width: 300%;
+      height: 60px;
+      background: radial-gradient(ellipse at 30% 50%, rgba(200, 190, 180, 0.05), transparent 70%);
+      animation: cloudsDrift 30s linear infinite;
+    }
+    @keyframes cloudsDrift {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(33%); }
+    }
+    .scene-mountain .birds {
+      position: absolute;
+      top: 25%;
+      right: 15%;
+      font-size: 1.2rem;
+      color: rgba(180, 160, 130, 0.08);
+      letter-spacing: 1.5rem;
+      animation: birdsFly 8s ease-in-out infinite;
+    }
+    @keyframes birdsFly {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+      50% { transform: translate(30px, -20px) scale(1.2); opacity: 0.8; }
+    }
+
+    /* 2. BATTLE SCENE - Action */
+    .scene-battle {
+      background: radial-gradient(ellipse at 50% 80%, #2d1f18, #0a0806);
+      position: relative;
+    }
+    .scene-battle .fire {
+      position: absolute;
+      bottom: 10%;
+      width: 40px;
+      height: 60px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(212, 100, 55, 0.4), transparent 70%);
+      animation: fireFlicker 0.5s infinite alternate;
+    }
+    .scene-battle .fire1 { left: 15%; animation-delay: 0s; }
+    .scene-battle .fire2 { left: 45%; animation-delay: 0.2s; height: 50px; }
+    .scene-battle .fire3 { right: 15%; animation-delay: 0.4s; height: 70px; }
+    @keyframes fireFlicker {
+      0% { opacity: 0.4; transform: scale(1) rotate(-2deg); }
+      100% { opacity: 0.8; transform: scale(1.1) rotate(2deg); }
+    }
+    .scene-battle .smoke {
+      position: absolute;
+      top: 20%;
+      width: 150px;
+      height: 80px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(100, 90, 80, 0.12), transparent 70%);
+      animation: smokeRise 10s infinite ease-out;
+    }
+    .scene-battle .smoke1 { left: 20%; animation-delay: 0s; }
+    .scene-battle .smoke2 { right: 25%; animation-delay: 3s; width: 200px; }
+    @keyframes smokeRise {
+      0% { transform: translateY(0) scale(1); opacity: 0.4; }
+      100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+    }
+    .scene-battle .soldiers {
+      position: absolute;
+      bottom: 15%;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      justify-content: space-around;
+      opacity: 0.3;
+      animation: soldiersMarch 3s infinite alternate;
+    }
+    @keyframes soldiersMarch {
+      0% { transform: translateX(-5px); }
+      100% { transform: translateX(5px); }
+    }
+    .scene-battle .soldiers span {
+      width: 4px;
+      height: 30px;
+      background: #b89a6b;
+      transform: rotate(var(--rot, 0deg));
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.05);
+    }
+    .scene-battle .soldiers span:nth-child(2) { --rot: 5deg; }
+    .scene-battle .soldiers span:nth-child(3) { --rot: -3deg; }
+    .scene-battle .soldiers span:nth-child(5) { --rot: 4deg; }
+    .scene-battle .flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(255, 200, 100, 0.1), transparent 60%);
+      animation: battleFlash 4s infinite;
+    }
+    @keyframes battleFlash {
+      0%, 90%, 100% { opacity: 0; }
+      95% { opacity: 0.6; }
+    }
+
+    /* 3. PALACE SCENE - Royal */
+    .scene-palace {
+      background: radial-gradient(ellipse at 50% 80%, #2d241e, #0a0806);
+      position: relative;
+    }
+    .scene-palace .palace {
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 250px;
+      height: 140px;
+      background: 
+        polygon(0% 100%, 3% 50%, 10% 40%, 18% 50%, 25% 30%, 32% 40%, 40% 20%, 50% 10%, 60% 20%, 68% 40%, 75% 30%, 82% 50%, 90% 40%, 97% 50%, 100% 100%);
+      opacity: 0.4;
+      border: 1px solid rgba(184, 154, 107, 0.08);
+      animation: palaceGlow 5s ease-in-out infinite;
+    }
+    @keyframes palaceGlow {
+      0%, 100% { opacity: 0.3; box-shadow: 0 0 30px rgba(212, 175, 55, 0.02); }
+      50% { opacity: 0.5; box-shadow: 0 0 60px rgba(212, 175, 55, 0.05); }
+    }
+    .scene-palace .pillars {
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 100px;
+      display: flex;
+      justify-content: space-around;
+      opacity: 0.2;
+    }
+    .scene-palace .pillars span {
+      width: 4px;
+      height: 100%;
+      background: #b89a6b;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.05);
+      animation: pillarGlow 4s ease-in-out infinite;
+    }
+    .scene-palace .pillars span:nth-child(2) { animation-delay: 0.5s; }
+    .scene-palace .pillars span:nth-child(3) { animation-delay: 1s; }
+    .scene-palace .pillars span:nth-child(4) { animation-delay: 1.5s; }
+    @keyframes pillarGlow {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.5; }
+    }
+    .scene-palace .candles {
+      position: absolute;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 30px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .scene-palace .candles span {
+      width: 6px;
+      height: 15px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.3), transparent 80%);
+      animation: candleFlicker 2s infinite alternate;
+    }
+    .scene-palace .candles span:nth-child(2) { animation-delay: 0.3s; }
+    .scene-palace .candles span:nth-child(3) { animation-delay: 0.6s; }
+    .scene-palace .candles span:nth-child(4) { animation-delay: 0.9s; }
+    .scene-palace .candles span:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes candleFlicker {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    /* 4. NIGHT SCENE - Mystical */
+    .scene-night {
+      background: radial-gradient(ellipse at 50% 50%, #1a1410, #0a0806);
+      position: relative;
+    }
+    .scene-night .stars {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,240,0.5), transparent),
+        radial-gradient(2px 2px at 25% 60%, rgba(255,255,240,0.3), transparent),
+        radial-gradient(3px 3px at 40% 10%, rgba(255,255,240,0.6), transparent),
+        radial-gradient(2px 2px at 55% 45%, rgba(255,255,240,0.4), transparent),
+        radial-gradient(3px 3px at 70% 25%, rgba(255,255,240,0.5), transparent),
+        radial-gradient(2px 2px at 85% 70%, rgba(255,255,240,0.3), transparent),
+        radial-gradient(2px 2px at 95% 35%, rgba(255,255,240,0.4), transparent),
+        radial-gradient(3px 3px at 15% 85%, rgba(255,255,240,0.2), transparent),
+        radial-gradient(2px 2px at 65% 90%, rgba(255,255,240,0.3), transparent);
+      background-size: 200% 200%;
+      animation: starTwinkle 6s infinite alternate;
+    }
+    @keyframes starTwinkle {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .scene-night .moon {
+      position: absolute;
+      top: 12%;
+      right: 20%;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 60% 40%, rgba(212, 200, 180, 0.25), transparent 80%);
+      box-shadow: 0 0 80px rgba(212, 200, 180, 0.08);
+      animation: moonGlow 8s ease-in-out infinite;
+    }
+    @keyframes moonGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    .scene-night .shooting-star {
+      position: absolute;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,240,0.3), transparent);
+      animation: shootingStar 12s infinite;
+    }
+    .scene-night .shooting-star:nth-child(3) { top: 30%; left: 10%; animation-delay: 4s; }
+    .scene-night .shooting-star:nth-child(4) { top: 60%; right: 10%; animation-delay: 8s; }
+    @keyframes shootingStar {
+      0% { transform: translate(0, 0) rotate(-30deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(200px, 100px) rotate(-30deg); opacity: 0; }
+    }
+
+    /* 5. WATER SCENE - River/Fort */
+    .scene-water {
+      background: radial-gradient(ellipse at 50% 80%, #1a2a24, #0a0806);
+      position: relative;
+    }
+    .scene-water .water {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background: radial-gradient(ellipse at 50% 100%, rgba(60, 120, 150, 0.15), transparent 70%);
+      animation: waterFlow 4s ease-in-out infinite;
+    }
+    @keyframes waterFlow {
+      0%, 100% { transform: translateX(-5px); opacity: 0.3; }
+      50% { transform: translateX(5px); opacity: 0.5; }
+    }
+    .scene-water .reflection {
+      position: absolute;
+      bottom: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 40%;
+      background: radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.05), transparent 70%);
+      animation: reflectionRipple 3s ease-in-out infinite;
+    }
+    @keyframes reflectionRipple {
+      0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.3; }
+      50% { transform: translateX(-50%) scaleX(1.1); opacity: 0.5; }
+    }
+
+    /* ============================================
+       STORY CONTENT
+       ============================================ */
+    .story-content {
+      font-size: 1.3rem;
+      line-height: 1.8;
+      color: #d4c9b5;
+      position: relative;
+      z-index: 2;
+      min-height: 200px;
+    }
+    .story-content p {
+      margin-bottom: 1.2rem;
+      animation: textFadeIn 1s ease;
+    }
+    @keyframes textFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .story-content .story-narration {
+      font-style: italic;
+      color: #b8a58a;
+      border-left: 3px solid #b89a6b;
+      padding-left: 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 1.5rem;
+      animation: narrationReveal 1.5s ease;
+    }
+    @keyframes narrationReveal {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============================================
+       CHOICE OPTIONS - CINEMATIC STYLE
+       ============================================ */
+    .story-choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin: 2rem 0;
+      justify-content: center;
+    }
+    .story-choice-btn {
+      background: transparent;
+      border: 1px solid #5a4a38;
+      color: #d4c9b5;
+      padding: 0.9rem 2.2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      letter-spacing: 0.06rem;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      min-width: 180px;
+      text-align: center;
+    }
+    .story-choice-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(184, 154, 107, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .story-choice-btn:hover {
+      border-color: #b89a6b;
+      background: rgba(184, 154, 107, 0.06);
+      box-shadow: 0 0 40px rgba(184, 154, 107, 0.08);
+      transform: translateY(-3px) scale(1.02);
+    }
+    .story-choice-btn:hover::before {
+      opacity: 1;
+    }
+    .story-choice-btn:active {
+      transform: scale(0.97);
+    }
+    .story-choice-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .story-choice-btn .choice-icon {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    /* Choice selected animation */
+    .choice-selected {
+      animation: choiceSelected 0.6s ease;
+      border-color: #d4af37 !important;
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.1) !important;
+    }
+    @keyframes choiceSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .story-result {
+      margin-top: 1.5rem;
+      color: #b89a6b;
+      font-style: italic;
+      min-height: 2rem;
+      font-size: 1.1rem;
+      padding: 1rem;
+      border-top: 1px solid #2d241e;
+      text-align: center;
+      animation: resultReveal 0.8s ease;
+    }
+    @keyframes resultReveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn-cinematic {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.6rem 2.2rem;
+      background: transparent;
+      border: 1.5px solid #b89a6b;
+      color: #d4c9b5;
+      letter-spacing: 0.2rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 20px rgba(184, 154, 107, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-cinematic::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(184, 154, 107, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .btn-cinematic:hover::before {
+      opacity: 1;
+    }
+    .btn-cinematic:hover {
+      background: rgba(184, 154, 107, 0.06);
+      border-color: #d4af37;
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.12);
+      transform: scale(1.02);
+      color: #f0e6d3;
+    }
+    .btn-cinematic:active { transform: scale(0.97); }
+    .btn-cinematic.hidden { display: none; }
+
+    /* Continue button with pulsing */
+    .btn-continue {
+      animation: continuePulse 2s infinite;
+    }
+    @keyframes continuePulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(184, 154, 107, 0.05); }
+      50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.1); }
+    }
+
+    .story-footer {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      border-top: 1px solid #2d241e;
+      padding-top: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       PROGRESS INDICATOR
+       ============================================ */
+    .story-progress {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1rem 0;
+      position: relative;
+      z-index: 1;
+    }
+    .story-progress .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2d241e;
+      transition: all 0.5s ease;
+      border: 1px solid #3d3228;
+    }
+    .story-progress .dot.active {
+      background: #d4af37;
+      border-color: #d4af37;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      transform: scale(1.3);
+    }
+    .story-progress .dot.completed {
+      background: #b89a6b;
+      border-color: #b89a6b;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .story-container { padding: 1.5rem; }
+      .story-content { font-size: 1.1rem; }
+      .cinematic-scene { height: 250px; }
+      .story-choice-btn { padding: 0.7rem 1.5rem; font-size: 1rem; min-width: 140px; }
+    }
+    @media (max-width: 480px) {
+      .story-container { padding: 1rem; }
+      .cinematic-scene { height: 200px; }
+      .story-choice-btn { padding: 0.5rem 1rem; font-size: 0.9rem; min-width: 120px; }
+      .story-content .story-narration { font-size: 1.1rem; }
+      .story-progress .dot { width: 6px; height: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="story-container">
+    <div class="story-header">
+      <h2 id="storyTitle">The Legend Begins</h2>
+      <span class="story-era" id="storyEra">1630 · Shivneri</span>
+    </div>
+
+    <div class="story-progress" id="storyProgress"></div>
+
+    <div class="story-content" id="storyContent">
+      <div class="cinematic-scene" id="cinematicScene"></div>
+      <div id="storyText"></div>
+      <div class="story-choices" id="storyChoices"></div>
+      <div class="story-result" id="storyResult"></div>
+    </div>
+
+    <div class="story-footer">
+      <button class="btn-cinematic" id="btnStoryBack">← Back to Legends</button>
+      <button class="btn-cinematic btn-continue hidden" id="btnStoryContinue">Continue →</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // AUTH CHECK
+    // ============================================
+    const SESSION_KEY = 'legends_session';
+
+    function getSession() {
+      try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function isLoggedIn() {
+      const session = getSession();
+      return session && session.username;
+    }
+
+    if (!isLoggedIn()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    // ============================================
+    // DATA WITH CINEMATIC SCENES
+    // ============================================
+    const storyData = {
+      shivaji: {
+        name: 'Chhatrapati Shivaji Maharaj',
+        era: 'Maratha Empire · 1630–1680',
+        sceneClass: 'scene-mountain',
+        story: [
+          { type: 'narration', text: '"Before the legend, there was a young boy born in the hill fort of Shivneri."' },
+          { type: 'text', text: 'In the year 1630, amidst the rugged Sahyadri mountains, a child was born who would change the course of Indian history. His name was Shivaji Bhosale.' },
+          { type: 'scene', sceneClass: 'scene-mountain' },
+          { type: 'text', text: 'From a young age, Shivaji showed extraordinary courage and strategic brilliance. He dreamed of establishing a sovereign state free from foreign domination.' },
+          { type: 'narration', text: '"He captured his first fort at the age of 16, beginning a journey that would inspire generations."' },
+          { type: 'choice', prompt: '⚔ What path will you take?', options: ['🗡 Lead a guerrilla attack', '🤝 Seek alliances', '🏰 Fortify your position'] }
+        ],
+        legacy: 'Shivaji Maharaj founded the Maratha Empire, which became a formidable force against Mughal expansion. His legacy of courage, strategic warfare, and enlightened governance endures to this day.'
+      },
+      lakshmibai: {
+        name: 'Rani Lakshmibai',
+        era: 'Jhansi · 1828–1858',
+        sceneClass: 'scene-battle',
+        story: [
+          { type: 'narration', text: '"She was a queen, a mother, and a warrior who refused to bow."' },
+          { type: 'text', text: 'Rani Lakshmibai of Jhansi became a symbol of resistance when the British East India Company tried to annex her kingdom under the Doctrine of Lapse.' },
+          { type: 'scene', sceneClass: 'scene-battle' },
+          { type: 'text', text: 'With her infant son strapped to her back, she led her troops into battle, becoming one of the most iconic figures of the Indian Rebellion of 1857.' },
+          { type: 'narration', text: '"She fought with unparalleled valor, inspiring thousands to join the cause of freedom."' },
+          { type: 'choice', prompt: '⚔ How will you defend Jhansi?', options: ['🏰 Fortify the city walls', '⚡ Launch a counter-attack', '🤝 Seek help from allies'] }
+        ],
+        legacy: 'Rani Lakshmibai\'s courage and sacrifice made her a legend. Though she fell in battle, her spirit became a beacon for the independence movement.'
+      },
+      pratap: {
+        name: 'Maharana Pratap',
+        era: 'Mewar · 1540–1597',
+        sceneClass: 'scene-night',
+        story: [
+          { type: 'narration', text: '"He chose honor over submission, and his name became synonymous with Rajput pride."' },
+          { type: 'text', text: 'Maharana Pratap of Mewar was a king who refused to bow to Mughal Emperor Akbar. His fierce independence and guerrilla warfare tactics kept the Mughals at bay.' },
+          { type: 'scene', sceneClass: 'scene-night' },
+          { type: 'text', text: 'The Battle of Haldighati in 1576 was a testament to his courage. Though outnumbered, he fought with such ferocity that the Mughal forces were shaken.' },
+          { type: 'narration', text: '"He reclaimed most of his kingdom and lived as a free ruler, never compromising his principles."' },
+          { type: 'choice', prompt: '⚔ How will you face the Mughal army?', options: ['🏔 Ambush in the hills', '⚔ Open battle', '🤝 Negotiate from strength'] }
+        ],
+        legacy: 'Maharana Pratap\'s unwavering resistance became a symbol of Rajput valor. He is remembered as a king who chose freedom over submission.'
+      },
+      prithviraj: {
+        name: 'Prithviraj Chauhan',
+        era: 'Chauhan Dynasty · 1166–1192',
+        sceneClass: 'scene-palace',
+        story: [
+          { type: 'narration', text: '"He was a warrior, a poet, and a lover. His legend echoes through the ages."' },
+          { type: 'text', text: 'Prithviraj Chauhan, the king of Ajmer and Delhi, was one of the greatest Rajput rulers. His court was filled with poets and warriors, and his fame spread far and wide.' },
+          { type: 'scene', sceneClass: 'scene-palace' },
+          { type: 'text', text: 'His love story with Sanyogita, and his battles against Muhammad Ghori, have become the stuff of legend. He defeated Ghori at the First Battle of Tarain.' },
+          { type: 'narration', text: '"But fate had other plans. In the Second Battle of Tarain, he was captured and his empire fell."' },
+          { type: 'choice', prompt: '⚔ How will you prepare for the coming storm?', options: ['🏰 Strengthen the army', '🤝 Seek diplomatic allies', '⚡ Personally lead the charge'] }
+        ],
+        legacy: 'Prithviraj Chauhan\'s story is one of glory and tragedy. His bravery and his love story continue to inspire poets and storytellers.'
+      }
+    };
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentLegend = null;
+    let storyStep = 0;
+    let userChoice = null;
+    let totalSteps = 0;
+
+    // ============================================
+    // DOM REFS
+    // ============================================
+    const textContainer = document.getElementById('storyText');
+    const choicesContainer = document.getElementById('storyChoices');
+    const resultContainer = document.getElementById('storyResult');
+    const continueBtn = document.getElementById('btnStoryContinue');
+    const backBtn = document.getElementById('btnStoryBack');
+    const sceneContainer = document.getElementById('cinematicScene');
+    const titleEl = document.getElementById('storyTitle');
+    const eraEl = document.getElementById('storyEra');
+    const progressContainer = document.getElementById('storyProgress');
+
+    // ============================================
+    // LOAD LEGEND
+    // ============================================
+    function loadLegend(legendId) {
+      const data = storyData[legendId];
+      if (!data) {
+        window.location.href = 'histories.html';
+        return;
+      }
+      currentLegend = data;
+      storyStep = 0;
+      userChoice = null;
+      totalSteps = data.story.length;
+      titleEl.textContent = data.name;
+      eraEl.textContent = data.era;
+      renderStoryStep();
+    }
+
+    // ============================================
+    // UPDATE PROGRESS
+    // ============================================
+    function updateProgress() {
+      progressContainer.innerHTML = '';
+      const total = totalSteps + 1; // +1 for legacy
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        if (i === storyStep) dot.classList.add('active');
+        else if (i < storyStep) dot.classList.add('completed');
+        progressContainer.appendChild(dot);
+      }
+    }
+
+    // ============================================
+    // RENDER STORY STEP
+    // ============================================
+    function renderStoryStep() {
+      if (!currentLegend) return;
+      const story = currentLegend.story;
+      resultContainer.textContent = '';
+      choicesContainer.innerHTML = '';
+      continueBtn.classList.add('hidden');
+      updateProgress();
+
+      // Legacy ending
+      if (storyStep >= story.length) {
+        sceneContainer.style.display = 'none';
+        textContainer.innerHTML = `
+          <div class="story-narration">"The journey ends. The legacy remains."</div>
+          <p style="color: #d4af37; font-size: 1.6rem; margin: 1.5rem 0; text-align:center;">THE HISTORICAL RECORD</p>
+          <p style="font-size: 1.2rem; text-align:center;">${currentLegend.legacy}</p>
+          <p style="margin-top: 1.5rem; color: #b89a6b; font-style: italic; font-size: 1.4rem; text-align:center;">— History remembers the legend.</p>
+        `;
+        continueBtn.textContent = 'Return to Legends';
+        continueBtn.classList.remove('hidden');
+        continueBtn.onclick = () => {
+          window.location.href = 'histories.html';
+        };
+        return;
+      }
+
+      sceneContainer.style.display = 'block';
+      const step = story[storyStep];
+
+      // Set scene with transition
+      sceneContainer.className = 'cinematic-scene scene-transition';
+      if (step.sceneClass) {
+        sceneContainer.classList.add(step.sceneClass);
+        // Add scene-specific elements
+        if (step.sceneClass === 'scene-mountain') {
+          sceneContainer.innerHTML = `
+            <div class="mountains"></div>
+            <div class="sun"></div>
+            <div class="clouds"></div>
+            <div class="fort"></div>
+            <div class="birds">~ ~ ~</div>
+          `;
+        } else if (step.sceneClass === 'scene-battle') {
+          sceneContainer.innerHTML = `
+            <div class="fire fire1"></div>
+            <div class="fire fire2"></div>
+            <div class="fire fire3"></div>
+            <div class="smoke smoke1"></div>
+            <div class="smoke smoke2"></div>
+            <div class="soldiers">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="flash"></div>
+          `;
+        } else if (step.sceneClass === 'scene-palace') {
+          sceneContainer.innerHTML = `
+            <div class="palace"></div>
+            <div class="pillars">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="candles">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          `;
+        } else if (step.sceneClass === 'scene-night') {
+          sceneContainer.innerHTML = `
+            <div class="stars"></div>
+            <div class="moon"></div>
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+          `;
+        } else if (step.sceneClass === 'scene-water') {
+          sceneContainer.innerHTML = `
+            <div class="water"></div>
+            <div class="reflection"></div>
+          `;
+        }
+      } else if (currentLegend.sceneClass) {
+        sceneContainer.classList.add(currentLegend.sceneClass);
+      }
+
+      // Render content based on type
+      switch (step.type) {
+        case 'narration':
+          textContainer.innerHTML = `<div class="story-narration">${step.text}</div>`;
+          choicesContainer.innerHTML = '';
+          continueBtn.textContent = 'Continue →';
+          continueBtn.classList.remove('hidden');
+          continueBtn.onclick = () => { storyStep++; renderStoryStep(); };
+          break;
+
+        case 'text':
+          textContainer.innerHTML = `<p>${step.text}</p>`;
+          choicesContainer.innerHTML = '';
+          continueBtn.textContent = 'Continue →';
+          continueBtn.classList.remove('hidden');
+          continueBtn.onclick = () => { storyStep++; renderStoryStep(); };
+          break;
+
+        case 'scene':
+          textContainer.innerHTML = `<p style="text-align:center; color:#a08b78; font-size:1.2rem;">— A moment frozen in time —</p>`;
+          choicesContainer.innerHTML = '';
+          continueBtn.textContent = 'Continue →';
+          continueBtn.classList.remove('hidden');
+          continueBtn.onclick = () => { storyStep++; renderStoryStep(); };
+          break;
+
+        case 'choice':
+          textContainer.innerHTML = `<p style="color:#d4af37; font-size:1.6rem; text-align:center;">${step.prompt}</p>`;
+          step.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'story-choice-btn';
+            // Split icon and text
+            const parts = opt.match(/^([^\s]+\s)?(.*)/);
+            const icon = parts[1] || '✦';
+            const text = parts[2] || opt;
+            btn.innerHTML = `<span class="choice-icon">${icon.trim()}</span>${text}`;
+            btn.addEventListener('click', () => {
+              userChoice = text;
+              btn.classList.add('choice-selected');
+              resultContainer.textContent = `✦ You chose: "${text}". Your journey takes a new path...`;
+              document.querySelectorAll('.story-choice-btn').forEach(b => b.disabled = true);
+              continueBtn.textContent = 'Continue →';
+              continueBtn.classList.remove('hidden');
+              continueBtn.onclick = () => {
+                storyStep++;
+                renderStoryStep();
+              };
+            });
+            choicesContainer.appendChild(btn);
+          });
+          continueBtn.classList.add('hidden');
+          break;
+
+        default:
+          textContainer.innerHTML = `<p>Continuing the legend...</p>`;
+          continueBtn.textContent = 'Continue →';
+          continueBtn.classList.remove('hidden');
+          continueBtn.onclick = () => { storyStep++; renderStoryStep(); };
+      }
+
+      // Scroll to top of content
+      document.querySelector('.story-container').scrollTop = 0;
+    }
+
+    // ============================================
+    // EVENT BINDINGS
+    // ============================================
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'histories.html';
+    });
+
+    // ============================================
+    // INIT
+    // ============================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const legendId = urlParams.get('legend');
+    if (legendId) {
+      loadLegend(legendId);
+    } else {
+      window.location.href = 'histories.html';
+    }
+  </script>
+</body>
+</html>
